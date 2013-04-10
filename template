@@ -1,0 +1,34 @@
+#! /bin/bash
+
+TEMPLATE_FOLDER=~/bin/file_templates
+echo "What kind of document would you like to use?"
+echo "Available files are:"
+FILES=($(ls  -X --color=never -C $TEMPLATE_FOLDER ))
+
+COUNTER=1
+for i in "${FILES[@]}"; do 
+    echo "[$COUNTER] $i"
+    COUNTER=$((COUNTER+1))
+done
+
+read SELECTED
+if [[ "$SELECTED" =~ ^[^0-9]*$ ]]; then
+    echo "You can only give me a number"
+elif [ "$SELECTED" -gt "${#FILES[@]}" ] || [ "$SELECTED" -le 0 ]; then 
+    echo "No corresponding template file"
+else
+    if [ -z $1 ]; then
+	DEST="./"
+    else
+	DEST="$1"
+    fi
+	cp -v -i $TEMPLATE_FOLDER/${FILES[$((SELECTED-1))]} "$DEST"
+fi
+
+#read DOC_TYPE
+#DOC_TYPE=$(echo $DOC_TYPE|sed -e 's/\.tex$//')
+#if [ -f "$TEMPLATE_FOLDER"/$DOC_TYPE.tex ]; then
+#cp "$TEMPLATE_FOLDER"/$DOC_TYPE.tex .
+#else 
+#echo "No such template"
+#fi
